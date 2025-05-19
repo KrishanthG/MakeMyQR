@@ -124,6 +124,26 @@
     margin-left: auto;
     margin-right: auto;
     }
+.install-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #6f4ef2;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(111, 78, 242, 0.3);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.install-btn:hover {
+  background-color: #5942c3;
+  transform: translateY(-2px);
+}
 
 
   </style>
@@ -166,8 +186,9 @@
     <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
     <div id="qrcode"></div>
 
+    
     <p>Developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
-  </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script>
@@ -188,8 +209,8 @@
           qrContainer.appendChild(canvas);
           currentCanvas = canvas;
         }
-      });
-    }
+    });
+}
 
     function downloadQRCode() {
       if (!currentCanvas) return;
@@ -198,9 +219,9 @@
       link.href = currentCanvas.toDataURL();
       link.click();
     }
-
+    
     function downloadSVG() {
-      if (!currentText.trim()) return;
+        if (!currentText.trim()) return;
       QRCode.toString(currentText, { type: 'svg' }, function (err, svg) {
         if (err) return console.error(err);
         const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -243,6 +264,23 @@
         generateQRCode();
       }
     });
+    
+    const installBtn = document.createElement('button');
+    installBtn.textContent = 'Install App';
+    installBtn.className = 'install-btn'; // apply the style here
+    installBtn.onclick = () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      });
+    };
+    document.body.appendChild(installBtn);
   </script>
 </body>
 </html>
