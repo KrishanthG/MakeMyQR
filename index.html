@@ -151,6 +151,39 @@
   transform: translateY(-2px);
 }
 
+/* Base styles */
+.credit {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-color);
+}
+
+.credit a {
+  color: var(--link-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+}
+
+/* Light mode */
+:root {
+  --text-color: #000000;
+  --link-color: #0073e6;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #000000;
+    --link-color: #66aaff;
+  }
+}
+
+
 
   </style>
 </head>
@@ -193,7 +226,7 @@
     <div id="qrcode"></div>
 
     
-    <p>Developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
+    <p class="credit" >Developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
 </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
