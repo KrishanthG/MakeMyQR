@@ -1,9 +1,10 @@
 {
   "name": "MakeMyQR",
   "short_name": "MakeMyQR",
-  "start_url": "/",
+  "description": "Simple QR Code Generator",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#6f4ef2",
+  "background_color": "#f3f3f3",
   "theme_color": "#6f4ef2",
   "icons": [
     {
