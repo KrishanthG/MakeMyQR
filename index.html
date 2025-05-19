@@ -271,6 +271,10 @@
       }
     });
     
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
     const installBtn = document.createElement('button');
     installBtn.textContent = 'Install App';
     installBtn.className = 'install-btn'; // apply the style here
@@ -287,6 +291,7 @@
       });
     };
     document.body.appendChild(installBtn);
+    });
   </script>
 </body>
 </html>
