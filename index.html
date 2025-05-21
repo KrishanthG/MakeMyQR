@@ -302,6 +302,9 @@ img {
     </button>
     <img src="icons/logo.png" alt="">
     <h1>MakeMyQR</h1>
+    <center>
+      <p>Version 1.0</p>
+    </center>
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
     <div>
       <button onclick="generateQRCode()">Generate</button>
@@ -487,11 +490,22 @@ fileInput.addEventListener('change', (event) => {
       const imageData = previewCtx.getImageData(0, 0, img.width, img.height);
       const code = jsQR(imageData.data, img.width, img.height);
 
-      if (code) {
-        imageResult.textContent = `QR Code detected: ${code.data}`;
-      } else {
-        imageResult.textContent = 'No QR code found in the image.';
-      }
+if (code) {
+  const scannedData = code.data;
+  imageResult.innerHTML = "QR Code: " + scannedData;
+
+  if (/^https?:\/\//.test(scannedData)) {
+    const linkBtn = document.createElement("button");
+    linkBtn.textContent = "Visit Site";
+    linkBtn.style.marginLeft = "10px";
+    linkBtn.onclick = () => window.open(scannedData, "_blank");
+    imageResult.appendChild(linkBtn);
+  }
+} else {
+  imageResult.innerHTML = "No QR code found in image.";
+}
+
+
     };
     img.src = e.target.result;
   };
@@ -540,11 +554,24 @@ function scanQRCode() {
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   const code = jsQR(imageData.data, imageData.width, imageData.height);
-
+  
+  
   if (code) {
-    resultDiv.textContent = "QR Code: " + code.data;
-    stopScan();
-  } else {
+  const scannedData = code.data;
+  resultDiv.innerHTML = "QR Code: " + scannedData;
+
+  // If the data looks like a URL, show a "Visit Site" button
+  if (/^https?:\/\//.test(scannedData)) {
+    const linkBtn = document.createElement("button");
+    linkBtn.textContent = "Visit Site";
+    linkBtn.style.marginLeft = "10px";
+    linkBtn.onclick = () => window.open(scannedData, "_blank");
+    resultDiv.appendChild(linkBtn);
+  }
+
+  stopScan();
+}
+ else {
     requestAnimationFrame(scanQRCode);
   }
 }
