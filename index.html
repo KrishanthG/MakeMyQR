@@ -503,7 +503,16 @@ const webcamCanvas = document.getElementById("webcam-canvas");
 const webcamCtx = webcamCanvas.getContext("2d");
 const webcamResult = document.getElementById("webcam-result");
 
-navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+try {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
+  video.srcObject = stream;
+  video.style.display = 'block';
+} catch(e) {
+  // If exact not supported, fallback to just 'environment' or default
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+  video.srcObject = stream;
+  video.style.display = 'block';
+}
 
   .then((stream) => {
     video.srcObject = stream;
