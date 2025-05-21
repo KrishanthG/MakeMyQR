@@ -356,21 +356,26 @@ img {
 
   <!-- Inline JS -->
   <script>
-    async function requestCameraAccess() {
+scanBtn.addEventListener('click', async () => {
+  errorMsg.textContent = ''; // clear previous errors
+
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    // If successful, you can use the stream in a video element or process it
-    console.log('Camera access granted');
-    // For example, show video stream in a <video> element
-    const videoElement = document.querySelector('video#camera');
-    if (videoElement) {
-      videoElement.srcObject = stream;
-      videoElement.play();
+    let stream;
+    try {
+      // Try exact facing mode first
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
+    } catch (err) {
+      // Fallback if exact facingMode not supported
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
     }
+    video.srcObject = stream;
+    video.style.display = 'block';
   } catch (err) {
-    console.error('Camera access denied or error:', err);
+    errorMsg.textContent = 'Camera permission denied or not available.';
+    console.error(err);
   }
-}
+});
+
 
     // Theme toggle
     function toggleTheme() {
