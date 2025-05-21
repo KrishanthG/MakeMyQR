@@ -504,6 +504,7 @@ const webcamCtx = webcamCanvas.getContext("2d");
 const webcamResult = document.getElementById("webcam-result");
 
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+
   .then((stream) => {
     video.srcObject = stream;
     video.setAttribute("playsinline", true);
