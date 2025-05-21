@@ -290,7 +290,7 @@ img {
       </div>
     </button>
     <img src="icons/logo.png" alt="">
-    <h1>MakeMyQR V1.0</h1>
+    <h1>MakeMyQR V1.0.0</h1>
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
     <div>
       <button onclick="generateQRCode()">Generate</button>
@@ -503,72 +503,70 @@ document.getElementById("file-input").addEventListener("change", function (e) {
   reader.readAsDataURL(file);
 });
 
-const video = document.getElementById("video");
-const webcamCanvas = document.getElementById("webcam-canvas");
-const webcamCtx = webcamCanvas.getContext("2d");
-const webcamResult = document.getElementById("webcam-result");
-async function startBackCamera() {
+const video = document.getElementById("camera-stream");
+const scanBtn = document.getElementById("scan-btn");
+const resultDiv = document.getElementById("webcam-result");
+
+let scanning = false;
+let videoStream = null;
+
+scanBtn.addEventListener("click", async () => {
+  if (scanning) {
+    stopScan();
+    scanBtn.textContent = "Scan via Camera";
+    return;
+  }
   try {
-    let stream;
-    try {
-      // Try exact facing mode first (back camera)
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
-    } catch (err) {
-      // Fallback if exact facingMode not supported
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-    }
-    video.srcObject = stream;
-    video.style.display = 'block';
+    videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = videoStream;
+    video.setAttribute("playsinline", true);
+    video.style.display = "block";
+    video.play();
+    scanning = true;
+    scanBtn.textContent = "Stop Scan";
+
+    tick();
   } catch (err) {
-    errorMsg.textContent = 'Camera permission denied or not available.';
+    resultDiv.textContent = "Camera permission denied or not available.";
     console.error(err);
   }
-}
+});
 
-scanBtn.addEventListener('click', startBackCamera);
-
-
-
-  .then((stream) => {
-    video.srcObject = stream;
-    video.setAttribute("playsinline", true);
-    requestAnimationFrame(scanWebcam);
-  });
-
-function scanWebcam() {
-  if (video.readyState === video.HAVE_ENOUGH_DATA) {
-    webcamCanvas.width = video.videoWidth;
-    webcamCanvas.height = video.videoHeight;
-    webcamCtx.drawImage(video, 0, 0, webcamCanvas.width, webcamCanvas.height);
-
-    const imageData = webcamCtx.getImageData(0, 0, webcamCanvas.width, webcamCanvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-    if (code) {
-      webcamResult.textContent = "Decoded Text: " + code.data;
-    } else {
-      webcamResult.textContent = "Scanning...";
-    }
+function stopScan() {
+  scanning = false;
+  video.pause();
+  if (videoStream) {
+    videoStream.getTracks().forEach(track => track.stop());
   }
-  requestAnimationFrame(scanWebcam);
+  video.style.display = "none";
 }
+
+const canvas = document.createElement("canvas");
+const canvasContext = canvas.getContext("2d");
 
 function tick() {
+  if (!scanning) return;
+
   if (video.readyState === video.HAVE_ENOUGH_DATA) {
-    canvasElement.hidden = false;
-    canvasElement.height = video.videoHeight;
-    canvasElement.width = video.videoWidth;
-    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-    const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvasContext.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = canvasContext.getImageData(0, 0, canvas.width, canvas.height);
     const code = jsQR(imageData.data, imageData.width, imageData.height, {
       inversionAttempts: "dontInvert",
     });
     if (code) {
-      webcamResult.innerText = `Scanned: ${code.data}`;
+      resultDiv.textContent = "QR Code Data: " + code.data;
+      stopScan();
+      scanBtn.textContent = "Scan via Camera";
+      return;
+    } else {
+      resultDiv.textContent = "Scanning...";
     }
   }
   requestAnimationFrame(tick);
 }
+
 function animateSVGQRCode() {
   const svgString = document.getElementById("qrcode").dataset.svg;
   if (!svgString) return;
