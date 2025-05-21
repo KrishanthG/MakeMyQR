@@ -15,205 +15,280 @@
     <meta property="og:type" content="website" />
 
   <style>
-    :root {
-      --bg-gradient: linear-gradient(135deg, #f3f3f3, #e6e6e6);
-      --text-color: #111;
-      --container-bg: white;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-gradient);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s;
-      color: var(--text-color);
-    }
-    .dark-mode {
-      --bg-gradient: linear-gradient(135deg, #1e1e1e, #2c2c2c);
-      --text-color: #fff;
-      --container-bg: #333;
-    }
-    .container {
-      background: var(--container-bg);
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      padding: 40px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeInUp 0.6s ease forwards;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      animation: slideFade 0.8s ease;
-    }
-    @keyframes slideFade {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      margin-bottom: 20px;
-      transition: box-shadow 0.2s ease;
-    }
-    input:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(111, 78, 242, 0.3);
-    }
-    button {
-      background-color: #6f4ef2;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin: 10px 5px;
-      transition: transform 0.15s ease, background-color 0.3s, box-shadow 0.2s ease;
-    }
-    button:hover {
-      background-color: #5942c3;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(111, 78, 242, 0.3);
-    }
-    button:active {
-      transform: scale(0.98);
-    }
-    #qrcode {
-      margin-top: 30px;
-    }
-    .drop-zone {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      padding: 20px;
-      color: #666;
-      margin-top: 20px;
-      cursor: pointer;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-    .drop-zone.dragover {
-      background-color: #f0f0ff;
-      border-color: #6f4ef2;
-      color: #333;
-    }
-    .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+:root {
+  --primary: #6f4ef2;
+  --primary-dark: #5942c3;
+  --bg-light: #f4f4f6;
+  --bg-dark: #1a1a1a;
+  --text-light: #111;
+  --text-dark: #fff;
+  --glass-bg-light: rgba(255, 255, 255, 0.7);
+  --glass-bg-dark: rgba(30, 30, 30, 0.6);
+  --glass-blur: blur(14px);
+  --card-radius: 24px;
+}
+body, .app-container {
+  padding-bottom: 60px; /* or more depending on button height */
+}
 
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .container img {
-    width: 80px;        
-    height: auto;       
-    margin-bottom: 20px;
-    border-radius: 12px; 
-    box-shadow: 0 4px 10px rgba(111, 78, 242, 0.3); 
-    user-select: none; 
-    display: block;    
-    margin-left: auto;
-    margin-right: auto;
-    }
-.install-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #6f4ef2;
-  color: white;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #ece9f1, #d9d6ec);
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.dark-mode {
+  background: linear-gradient(135deg, #121212, #1f1f1f);
+  color: var(--text-dark);
+}
+
+.container{
+  margin-top: 100px;
+}
+
+.container,
+.scanner-container {
+  background: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--card-radius);
+  box-shadow: 0 10px 30px rgba(111, 78, 242, 0.3);
+  padding: 2rem;
+  max-width: 450px;
+  width: 100%;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.dark-mode .container,
+.dark-mode .scanner-container {
+  background: var(--glass-bg-dark);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1, h2 {
+  margin: 0 0 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+input[type="text"],
+input[type="file"] {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  transition: box-shadow 0.2s;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(111, 78, 242, 0.3);
+}
+
+button {
+  background: var(--primary);
+  color: #fff;
   border: none;
   padding: 12px 20px;
   border-radius: 12px;
-  font-size: 1rem;
-  box-shadow: 0 4px 10px rgba(111, 78, 242, 0.3);
   cursor: pointer;
-  z-index: 1000;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.install-btn:hover {
-  background-color: #5942c3;
-  transform: translateY(-2px);
-}
-
-/* Base styles */
-.credit {
   font-size: 1rem;
+  margin: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(111, 78, 242, 0.25);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.drop-zone {
+  border: 2px dashed #bbb;
+  padding: 1rem;
+  border-radius: 12px;
+  color: #888;
   text-align: center;
-  margin-top: 2rem;
-  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.drop-zone.dragover {
+  background-color: #f0f0ff;
+  border-color: var(--primary);
+  color: #333;
+}
+
+img {
+  width: 80px;
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(111, 78, 242, 0.25);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.2rem;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(111, 78, 242, 0.3);
+  transition: background 0.3s;
+}
+
+.theme-toggle:hover {
+  background: var(--primary-dark);
+}
+
+.credit {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 1rem;
 }
 
 .credit a {
-  color: var(--link-color);
-  text-decoration: none;
+  color: var(--primary);
   font-weight: 500;
+  text-decoration: none;
 }
 
 .credit a:hover {
   text-decoration: underline;
 }
 
-/* Light mode */
-:root {
-  --text-color: #000000;
-  --link-color: #0073e6;
+#qrcode canvas {
+  margin-top: 20px;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(111, 78, 242, 0.15);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-color: #000000;
-    --link-color: #66aaff;
+#webcam-result {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+}
+@keyframes qrReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
+#qr-canvas {
+  animation: qrReveal 0.6s ease forwards;
+  transform-origin: center center;
+  box-shadow: 0 0 10px rgba(111, 78, 242, 0.5);
+}
+:root {
+  --qr-reveal-duration: 0.6s;
+  --qr-reveal-easing: ease;
+  --qr-glow-color: rgba(111, 78, 242, 0.5);
+}
+#qr-canvas {
+  animation: qrReveal var(--qr-reveal-duration) var(--qr-reveal-easing) forwards;
+  box-shadow: 0 0 15px var(--qr-glow-color);
+}
+.install-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #6f4ef2; /* your primary color */
+  color: white;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 15px rgba(111, 78, 242, 0.6);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.install-btn:hover {
+  background-color: #5942c3; /* darker shade */
+  box-shadow: 0 8px 20px rgba(89, 66, 195, 0.8);
+}
+
+
+
 
 
 
   </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
 </head>
 <body>
-  <div class="theme-toggle" onclick="toggleTheme()">
-        <label class="theme-switch">
-        <input onclick="toggleTheme()" type="checkbox" class="theme-switch__checkbox">
-        <div class="theme-switch__container">
-            <div class="theme-switch__clouds"></div>
-            <div class="theme-switch__stars-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 55" fill="none">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M135.831 3.00688C135.055 3.85027 134.111 4.29946 133 4.35447C134.111 4.40947 135.055 4.85867 135.831 5.71123C136.607 6.55462 136.996 7.56303 136.996 8.72727C136.996 7.95722 137.172 7.25134 137.525 6.59129C137.886 5.93124 138.372 5.39954 138.98 5.00535C139.598 4.60199 140.268 4.39114 141 4.35447C139.88 4.2903 138.936 3.85027 138.16 3.00688C137.384 2.16348 136.996 1.16425 136.996 0C136.996 1.16425 136.607 2.16348 135.831 3.00688ZM31 23.3545C32.1114 23.2995 33.0551 22.8503 33.8313 22.0069C34.6075 21.1635 34.9956 20.1642 34.9956 19C34.9956 20.1642 35.3837 21.1635 36.1599 22.0069C36.9361 22.8503 37.8798 23.2903 39 23.3545C38.2679 23.3911 37.5976 23.602 36.9802 24.0053C36.3716 24.3995 35.8864 24.9312 35.5248 25.5913C35.172 26.2513 34.9956 26.9572 34.9956 27.7273C34.9956 26.563 34.6075 25.5546 33.8313 24.7112C33.0551 23.8587 32.1114 23.4095 31 23.3545ZM0 36.3545C1.11136 36.2995 2.05513 35.8503 2.83131 35.0069C3.6075 34.1635 3.99559 33.1642 3.99559 32C3.99559 33.1642 4.38368 34.1635 5.15987 35.0069C5.93605 35.8503 6.87982 36.2903 8 36.3545C7.26792 36.3911 6.59757 36.602 5.98015 37.0053C5.37155 37.3995 4.88644 37.9312 4.52481 38.5913C4.172 39.2513 3.99559 39.9572 3.99559 40.7273C3.99559 39.563 3.6075 38.5546 2.83131 37.7112C2.05513 36.8587 1.11136 36.4095 0 36.3545ZM56.8313 24.0069C56.0551 24.8503 55.1114 25.2995 54 25.3545C55.1114 25.4095 56.0551 25.8587 56.8313 26.7112C57.6075 27.5546 57.9956 28.563 57.9956 29.7273C57.9956 28.9572 58.172 28.2513 58.5248 27.5913C58.8864 26.9312 59.3716 26.3995 59.9802 26.0053C60.5976 25.602 61.2679 25.3911 62 25.3545C60.8798 25.2903 59.9361 24.8503 59.1599 24.0069C58.3837 23.1635 57.9956 22.1642 57.9956 21C57.9956 22.1642 57.6075 23.1635 56.8313 24.0069ZM81 25.3545C82.1114 25.2995 83.0551 24.8503 83.8313 24.0069C84.6075 23.1635 84.9956 22.1642 84.9956 21C84.9956 22.1642 85.3837 23.1635 86.1599 24.0069C86.9361 24.8503 87.8798 25.2903 89 25.3545C88.2679 25.3911 87.5976 25.602 86.9802 26.0053C86.3716 26.3995 85.8864 26.9312 85.5248 27.5913C85.172 28.2513 84.9956 28.9572 84.9956 29.7273C84.9956 28.563 84.6075 27.5546 83.8313 26.7112C83.0551 25.8587 82.1114 25.4095 81 25.3545ZM136 36.3545C137.111 36.2995 138.055 35.8503 138.831 35.0069C139.607 34.1635 139.996 33.1642 139.996 32C139.996 33.1642 140.384 34.1635 141.16 35.0069C141.936 35.8503 142.88 36.2903 144 36.3545C143.268 36.3911 142.598 36.602 141.98 37.0053C141.372 37.3995 140.886 37.9312 140.525 38.5913C140.172 39.2513 139.996 39.9572 139.996 40.7273C139.996 39.563 139.607 38.5546 138.831 37.7112C138.055 36.8587 137.111 36.4095 136 36.3545ZM101.831 49.0069C101.055 49.8503 100.111 50.2995 99 50.3545C100.111 50.4095 101.055 50.8587 101.831 51.7112C102.607 52.5546 102.996 53.563 102.996 54.7273C102.996 53.9572 103.172 53.2513 103.525 52.5913C103.886 51.9312 104.372 51.3995 104.98 51.0053C105.598 50.602 106.268 50.3911 107 50.3545C105.88 50.2903 104.936 49.8503 104.16 49.0069C103.384 48.1635 102.996 47.1642 102.996 46C102.996 47.1642 102.607 48.1635 101.831 49.0069Z"
-                        fill="currentColor"></path>
-                </svg>
-            </div>
-            <div class="theme-switch__circle-container">
-                <div class="theme-switch__sun-moon-container">
-                    <div class="theme-switch__moon">
-                        <div class="theme-switch__spot"></div>
-                        <div class="theme-switch__spot"></div>
-                        <div class="theme-switch__spot"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  </button>
-
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <!-- Main Container -->
+  <br>
+<span></span>
+  <br>
+  <br>
+  <br>
   <div class="container">
+    <div class="theme-toggle" onclick="toggleTheme()">
+          <label class="theme-switch">
+          <input onclick="toggleTheme()" type="checkbox" class="theme-switch__checkbox">
+          <div class="theme-switch__container">
+              <div class="theme-switch__clouds"></div>
+              <div class="theme-switch__stars-container">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 55" fill="none">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M135.831 3.00688C135.055 3.85027 134.111 4.29946 133 4.35447C134.111 4.40947 135.055 4.85867 135.831 5.71123C136.607 6.55462 136.996 7.56303 136.996 8.72727C136.996 7.95722 137.172 7.25134 137.525 6.59129C137.886 5.93124 138.372 5.39954 138.98 5.00535C139.598 4.60199 140.268 4.39114 141 4.35447C139.88 4.2903 138.936 3.85027 138.16 3.00688C137.384 2.16348 136.996 1.16425 136.996 0C136.996 1.16425 136.607 2.16348 135.831 3.00688ZM31 23.3545C32.1114 23.2995 33.0551 22.8503 33.8313 22.0069C34.6075 21.1635 34.9956 20.1642 34.9956 19C34.9956 20.1642 35.3837 21.1635 36.1599 22.0069C36.9361 22.8503 37.8798 23.2903 39 23.3545C38.2679 23.3911 37.5976 23.602 36.9802 24.0053C36.3716 24.3995 35.8864 24.9312 35.5248 25.5913C35.172 26.2513 34.9956 26.9572 34.9956 27.7273C34.9956 26.563 34.6075 25.5546 33.8313 24.7112C33.0551 23.8587 32.1114 23.4095 31 23.3545ZM0 36.3545C1.11136 36.2995 2.05513 35.8503 2.83131 35.0069C3.6075 34.1635 3.99559 33.1642 3.99559 32C3.99559 33.1642 4.38368 34.1635 5.15987 35.0069C5.93605 35.8503 6.87982 36.2903 8 36.3545C7.26792 36.3911 6.59757 36.602 5.98015 37.0053C5.37155 37.3995 4.88644 37.9312 4.52481 38.5913C4.172 39.2513 3.99559 39.9572 3.99559 40.7273C3.99559 39.563 3.6075 38.5546 2.83131 37.7112C2.05513 36.8587 1.11136 36.4095 0 36.3545ZM56.8313 24.0069C56.0551 24.8503 55.1114 25.2995 54 25.3545C55.1114 25.4095 56.0551 25.8587 56.8313 26.7112C57.6075 27.5546 57.9956 28.563 57.9956 29.7273C57.9956 28.9572 58.172 28.2513 58.5248 27.5913C58.8864 26.9312 59.3716 26.3995 59.9802 26.0053C60.5976 25.602 61.2679 25.3911 62 25.3545C60.8798 25.2903 59.9361 24.8503 59.1599 24.0069C58.3837 23.1635 57.9956 22.1642 57.9956 21C57.9956 22.1642 57.6075 23.1635 56.8313 24.0069ZM81 25.3545C82.1114 25.2995 83.0551 24.8503 83.8313 24.0069C84.6075 23.1635 84.9956 22.1642 84.9956 21C84.9956 22.1642 85.3837 23.1635 86.1599 24.0069C86.9361 24.8503 87.8798 25.2903 89 25.3545C88.2679 25.3911 87.5976 25.602 86.9802 26.0053C86.3716 26.3995 85.8864 26.9312 85.5248 27.5913C85.172 28.2513 84.9956 28.9572 84.9956 29.7273C84.9956 28.563 84.6075 27.5546 83.8313 26.7112C83.0551 25.8587 82.1114 25.4095 81 25.3545ZM136 36.3545C137.111 36.2995 138.055 35.8503 138.831 35.0069C139.607 34.1635 139.996 33.1642 139.996 32C139.996 33.1642 140.384 34.1635 141.16 35.0069C141.936 35.8503 142.88 36.2903 144 36.3545C143.268 36.3911 142.598 36.602 141.98 37.0053C141.372 37.3995 140.886 37.9312 140.525 38.5913C140.172 39.2513 139.996 39.9572 139.996 40.7273C139.996 39.563 139.607 38.5546 138.831 37.7112C138.055 36.8587 137.111 36.4095 136 36.3545ZM101.831 49.0069C101.055 49.8503 100.111 50.2995 99 50.3545C100.111 50.4095 101.055 50.8587 101.831 51.7112C102.607 52.5546 102.996 53.563 102.996 54.7273C102.996 53.9572 103.172 53.2513 103.525 52.5913C103.886 51.9312 104.372 51.3995 104.98 51.0053C105.598 50.602 106.268 50.3911 107 50.3545C105.88 50.2903 104.936 49.8503 104.16 49.0069C103.384 48.1635 102.996 47.1642 102.996 46C102.996 47.1642 102.607 48.1635 101.831 49.0069Z"
+                          fill="currentColor"></path>
+                  </svg>
+              </div>
+              <div class="theme-switch__circle-container">
+                  <div class="theme-switch__sun-moon-container">
+                      <div class="theme-switch__moon">
+                          <div class="theme-switch__spot"></div>
+                          <div class="theme-switch__spot"></div>
+                          <div class="theme-switch__spot"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </button>
     <img src="icons/logo.png" alt="">
     <h1>MakeMyQR</h1>
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
@@ -224,107 +299,316 @@
     </div>
     <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
     <div id="qrcode"></div>
+    <p class="credit">Developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
+  </div>
+<div class="scanner-container">
+  <h2>Scan QR Code from Image</h2>
+<input type="file" id="file-input" accept="image/*" />
+<canvas id="preview" style="display: none;"></canvas>
 
-    
-    <p class="credit" >This website was developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
+<div class="webcam-scanner">
+  <h2>Scan QR Code via Webcam</h2>
+<button id="scan-btn">Scan via Camera</button>
+<video id="camera-stream" autoplay playsinline style="display:none;"></video>
+<div id="error-msg" style="color:red;"></div>
+
+<script>
+  const scanBtn = document.getElementById('scan-btn');
+  const video = document.getElementById('camera-stream');
+  const errorMsg = document.getElementById('error-msg');
+
+  scanBtn.addEventListener('click', async () => {
+    errorMsg.textContent = ''; // clear previous errors
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      video.style.display = 'block';  // Show video element only after permission granted
+      // Here you can start scanning logic with the video stream
+    } catch (err) {
+      errorMsg.textContent = 'Camera permission denied or not available.';
+      console.error(err);
+    }
+  });
+</script>
+
+
+  <div id="webcam-result">Result will appear here</div>
+</div>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<button id="install-btn" class="install-btn">Install App</button>
+
+
+  <!-- External JS -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
+
+
+  <!-- Inline JS -->
   <script>
-    let currentCanvas = null;
-    let currentText = '';
-
-    function generateQRCode() {
-      const text = document.getElementById('text').value;
-      const qrContainer = document.getElementById('qrcode');
-      qrContainer.innerHTML = '';
-
-      if (!text.trim()) return;
-      currentText = text;
-
-      QRCode.toCanvas(text, { width: 200 }, function (err, canvas) {
-        if (err) console.error(err);
-        else {
-          qrContainer.appendChild(canvas);
-          currentCanvas = canvas;
-        }
-    });
+    async function requestCameraAccess() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    // If successful, you can use the stream in a video element or process it
+    console.log('Camera access granted');
+    // For example, show video stream in a <video> element
+    const videoElement = document.querySelector('video#camera');
+    if (videoElement) {
+      videoElement.srcObject = stream;
+      videoElement.play();
+    }
+  } catch (err) {
+    console.error('Camera access denied or error:', err);
+  }
 }
 
+    // Theme toggle
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    // Handle Enter key
+    function handleKey(event) {
+      if (event.key === "Enter") generateQRCode();
+    }
+
+    // QR Code generation
+function generateQRCode() {
+  const qrText = document.getElementById("text").value.trim();
+  const qrcodeContainer = document.getElementById("qrcode");
+  qrcodeContainer.innerHTML = "";
+
+  if (!qrText) {
+    alert("Please enter some text or a URL.");
+    return;
+  }
+
+  QRCode.toCanvas(qrText, { errorCorrectionLevel: 'H' }, function (err, canvas) {
+    if (err) return console.error(err);
+    canvas.id = "qr-canvas";
+canvas.style.opacity = "0"; // initially hidden
+// Append canvas to DOM
+qrcodeContainer.appendChild(canvas);
+
+// Trigger reflow to restart animation
+void canvas.offsetWidth;
+
+// Start animation
+canvas.style.animation = "qrReveal 0.6s ease forwards";
+
+  });
+
+  QRCode.toString(qrText, { type: 'svg' }, function (err, svg) {
+    if (!err) {
+      qrcodeContainer.dataset.svg = svg;
+    }
+  });
+}
+
+
+    // Download PNG
     function downloadQRCode() {
-      if (!currentCanvas) return;
-      const link = document.createElement('a');
-      link.download = 'qr-code.png';
-      link.href = currentCanvas.toDataURL();
+      const canvas = document.getElementById("qr-canvas");
+      if (!canvas) return alert("Generate a QR code first.");
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "qrcode.png";
       link.click();
     }
-    
-    function downloadSVG() {
-        if (!currentText.trim()) return;
-      QRCode.toString(currentText, { type: 'svg' }, function (err, svg) {
-        if (err) return console.error(err);
-        const blob = new Blob([svg], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'qr-code.svg';
-        link.click();
-        URL.revokeObjectURL(url);
-      });
-    }
 
-    function handleKey(e) {
-      if (e.key === 'Enter') {
-        generateQRCode();
+    // Download SVG
+// Download SVG
+function downloadSVG() {
+  const svg = document.getElementById("qrcode").dataset.svg;
+  if (!svg) return alert("Generate a QR code first.");
+  const blob = new Blob([svg], { type: "image/svg+xml" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "qrcode.svg";
+  link.click();
+  URL.revokeObjectURL(link.href); // Clean up the URL object
+}
+
+
+    // Drag & drop text
+const dropZone = document.getElementById("dropZone");
+
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.classList.add("dragover");
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("dragover");
+});
+
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("dragover");
+  const textData = e.dataTransfer.getData("text");
+  if (textData) {
+    document.getElementById("text").value = textData;
+    generateQRCode();
+  }
+});
+
+
+  </script>
+<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+<script>
+  // Scan from image
+
+document.getElementById("file-input").addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    const img = new Image();
+    img.onload = function () {
+      const canvas = document.getElementById("preview");
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      canvas.style.display = "block";
+      ctx.drawImage(img, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      const result = document.getElementById("scan-result");
+
+      if (code) {
+        result.textContent = "Decoded Text: " + code.data;
+      } else {
+        result.textContent = "No QR code found.";
       }
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+const video = document.getElementById("video");
+const webcamCanvas = document.getElementById("webcam-canvas");
+const webcamCtx = webcamCanvas.getContext("2d");
+const webcamResult = document.getElementById("webcam-result");
+
+navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+  .then((stream) => {
+    video.srcObject = stream;
+    video.setAttribute("playsinline", true);
+    requestAnimationFrame(scanWebcam);
+  });
+
+function scanWebcam() {
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    webcamCanvas.width = video.videoWidth;
+    webcamCanvas.height = video.videoHeight;
+    webcamCtx.drawImage(video, 0, 0, webcamCanvas.width, webcamCanvas.height);
+
+    const imageData = webcamCtx.getImageData(0, 0, webcamCanvas.width, webcamCanvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code) {
+      webcamResult.textContent = "Decoded Text: " + code.data;
+    } else {
+      webcamResult.textContent = "Scanning...";
     }
+  }
+  requestAnimationFrame(scanWebcam);
+}
 
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
+function tick() {
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvasElement.hidden = false;
+    canvasElement.height = video.videoHeight;
+    canvasElement.width = video.videoWidth;
+    canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+    const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: "dontInvert",
+    });
+    if (code) {
+      webcamResult.innerText = `Scanned: ${code.data}`;
     }
+  }
+  requestAnimationFrame(tick);
+}
+function animateSVGQRCode() {
+  const svgString = document.getElementById("qrcode").dataset.svg;
+  if (!svgString) return;
 
-    const dropZone = document.getElementById('dropZone');
+  const parser = new DOMParser();
+  const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+  const svgElement = svgDoc.documentElement;
 
-    dropZone.addEventListener('dragover', function (e) {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
+  // Clear container & append SVG
+  const qrcodeContainer = document.getElementById("qrcode");
+  qrcodeContainer.innerHTML = "";
+  qrcodeContainer.appendChild(svgElement);
 
-    dropZone.addEventListener('dragleave', function () {
-      dropZone.classList.remove('dragover');
-    });
+  // Animate all <path> strokes (fake a draw effect)
+  const paths = svgElement.querySelectorAll("path");
+  paths.forEach(path => {
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = length;
+    path.style.strokeDashoffset = length;
+    path.style.animation = "dashReveal 1s ease forwards";
+  });
+}
 
-    dropZone.addEventListener('drop', function (e) {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const data = e.dataTransfer.getData('text');
-      if (data) {
-        document.getElementById('text').value = data;
-        generateQRCode();
-      }
-    });
-    
+// CSS
+/*
+@keyframes dashReveal {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+*/
+
+
+
+</script>
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
+  installBtn.style.display = 'block';
+});
 
-    const installBtn = document.createElement('button');
-    installBtn.textContent = 'Install App';
-    installBtn.className = 'install-btn'; // apply the style here
-    installBtn.onclick = () => {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(choiceResult => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        } else {
-          console.log('User dismissed the install prompt');
-        }
-        deferredPrompt = null;
-        installBtn.style.display = 'none';
-      });
-    };
-    document.body.appendChild(installBtn);
-    });
-  </script>
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  }
+});
+
+// Hide button by default
+installBtn.style.display = 'none';
+
+
+</script>
+
+
 </body>
 </html>
