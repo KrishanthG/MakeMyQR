@@ -426,8 +426,11 @@ footer{
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
     <div class="action-buttons">
       <button onclick="generateQRCode()">Generate</button>
-      <button onclick="downloadQRCode()">Download PNG</button>
-      <button onclick="downloadSVG()">Download SVG</button>
+      <h2>Download</h2>
+      <button onclick="downloadQRCode()">PNG</button>
+      <button onclick="downloadQRCodeJPG()">JPG</button>
+      <button onclick="downloadQRCodeGIF()">GIF</button>
+      <button onclick="downloadSVG()">SVG</button>
     </div>
   </div>
 
@@ -551,6 +554,23 @@ function generateQRCode() {
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = "qrcode.png";
+      link.click();
+    }
+
+    function downloadQRCodeJPG() {
+      const canvas = document.getElementById("qr-canvas");
+      if (!canvas) return alert("Generate a QR code first.");
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/jpg");
+      link.download = "qrcode.jpg";
+      link.click();
+    }
+    function downloadQRCodeGIF() {
+      const canvas = document.getElementById("qr-canvas");
+      if (!canvas) return alert("Generate a QR code first.");
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/gif");
+      link.download = "qrcode.gif";
       link.click();
     }
 
