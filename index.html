@@ -69,7 +69,9 @@ body {
   max-width: 480px; /* Slightly increased max-width */
   width: 110%;
   margin-bottom: 2rem;
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.6s ease-out forwards;  
+  text-align: center; /* This will help center the #scan-btn */
+
 }
 
 .dark-mode .container,
@@ -121,6 +123,11 @@ h1, h2 {
   text-align: center;
 }
 
+.action-buttons {
+  text-align: center; /* This will center the buttons and h2 within this div */
+  margin-bottom: 1rem; /* Optional: for spacing */
+}
+
 input[type="text"],
 input[type="file"] {
   width: 93%;
@@ -147,6 +154,8 @@ button {
   font-size: 1rem;
   margin: 6px;
   transition: all 0.2s ease-in-out;
+  justify-content: center;
+  text-align: center;
 }
 
 button:hover {
