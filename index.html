@@ -433,7 +433,9 @@ footer{
     
   <div class="input-group">
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
+    <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
     <div class="action-buttons">
+      
       <button onclick="generateQRCode()">Generate</button>
       <h2>Download</h2>
       <button onclick="downloadQRCode()">PNG</button>
@@ -442,8 +444,6 @@ footer{
       <button onclick="downloadSVG()">SVG</button>
     </div>
   </div>
-
-  <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
   <div id="qrcode" class="qrcode-box">
     <div class="qr-loader-container" style="display: none;">
         <div class="qr-loader-grid">
