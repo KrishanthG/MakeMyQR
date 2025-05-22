@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MakeMyQR - QR Code Generator</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
@@ -15,6 +14,7 @@
     <meta property="og:type" content="website" />
 
   <style>
+/* General Styles */
 :root {
   --primary: #6f4ef2;
   --primary-dark: #5942c3;
@@ -26,12 +26,14 @@
   --glass-bg-dark: rgba(30, 30, 30, 0.6);
   --glass-blur: blur(14px);
   --card-radius: 24px;
-}
-body, .app-container {
-  padding-bottom: 60px; /* or more depending on button height */
+  --qr-reveal-duration: 0.6s;
+  --qr-reveal-easing: ease;
+  --qr-glow-color: rgba(111, 78, 242, 0.5);
 }
 
+
 body {
+  height: 1600px;
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #ece9f1, #d9d6ec);
@@ -42,6 +44,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
+  padding-bottom: 80px; /* Space for install button */
   transition: all 0.3s ease-in-out;
 }
 
@@ -51,7 +54,8 @@ body {
 }
 
 .container{
-  margin-top: 290px;
+  /* Adjusted margin-top for better default positioning */
+  margin-top: 2rem; /* Was 290px, reduced for better flexbox centering */
 }
 
 .container,
@@ -62,7 +66,7 @@ body {
   border-radius: var(--card-radius);
   box-shadow: 0 10px 30px rgba(111, 78, 242, 0.3);
   padding: 2rem;
-  max-width: 455px;
+  max-width: 480px; /* Slightly increased max-width */
   width: 110%;
   margin-bottom: 2rem;
   animation: fadeInUp 0.6s ease-out forwards;
@@ -78,6 +82,39 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Announcement Banner */
+.announcement-banner {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  text-align: center;
+  padding: 0.6em 1em; /* Using em for padding relative to font-size */
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px; /* Softer corners */
+  margin-bottom: 1.5rem; /* Space below the banner */
+  width: 100%; /* Ensure it takes full width available in the flex container (body) */
+  box-sizing: border-box;
+  animation: fadeInSlideDown 0.7s ease-out forwards;
+  box-shadow: 0 4px 10px #6f4ef2;
+}
+
+/* No specific dark mode changes needed for banner if current gradient is fine */
+/* .dark-mode .announcement-banner { } */
+
+.announcement-banner p {
+  margin: 0;
+}
+
+@keyframes fadeInSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 h1, h2 {
   margin: 0 0 1rem;
   font-weight: 700;
@@ -86,7 +123,7 @@ h1, h2 {
 
 input[type="text"],
 input[type="file"] {
-  width: 100%;
+  width: 93%;
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid #6f4ef2;
@@ -144,23 +181,27 @@ img {
   box-shadow: 0 4px 12px rgba(111, 78, 242, 0.25);
 }
 
-.theme-toggle {
+/* Styles for the new theme toggle container */
+.theme-toggle-container {
   position: fixed;
   top: 1.2rem;
   right: 1.2rem;
-  padding: 8px 16px;
-  font-size: 0.85rem;
-  background: var(--primary);
-  color: #fff;
-  border-radius: 20px;
-  cursor: pointer;
   z-index: 999;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
-  transition: background 0.3s;
 }
 
-.theme-toggle:hover {
-  background: var(--primary-dark);
+/* Assuming .theme-switch and its children are styled in style.css for the fancy toggle.
+   If not, basic styles would be needed here to make it visible and functional.
+   The original .theme-toggle button style is removed as we use the fancy switch. */
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.version {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  color: #777; /* Lighter color for version */
 }
 
 .credit {
@@ -186,9 +227,24 @@ img {
   box-shadow: 0 8px 20px rgba(111, 78, 242, 0.15);
 }
 
-#webcam-result {
+#image-result, #webcam-result {
   margin-top: 1rem;
   font-size: 0.95rem;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.05);
+  min-height: 2.5em; /* Ensure space even when empty */
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.dark-mode #image-result, .dark-mode #webcam-result {
+  background-color: rgba(255,255,255,0.1);
+}
+#error-msg {
+  color: #e74c3c; /* A more modern red */
+  font-weight: bold;
+  margin-top: 0.5rem;
   text-align: center;
 }
 @keyframes qrReveal {
@@ -210,11 +266,7 @@ img {
   transform-origin: center center;
   box-shadow: 0 0 10px rgba(111, 78, 242, 0.5);
 }
-:root {
-  --qr-reveal-duration: 0.6s;
-  --qr-reveal-easing: ease;
-  --qr-glow-color: rgba(111, 78, 242, 0.5);
-}
+
 #qr-canvas {
   animation: qrReveal var(--qr-reveal-duration) var(--qr-reveal-easing) forwards;
   box-shadow: 0 0 15px var(--qr-glow-color);
@@ -248,73 +300,154 @@ img {
   background-color: #000;
   border: 1px solid #6f4ef2;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px #6f4ef2;
+}
+footer{
+    margin-top: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.05);
+  min-height: 2.5em; /* Ensure space even when empty */
+  line-height: 1.5;
+  word-wrap: break-word;
 }
 
+/* QR Loader Styles */
+.qr-loader-container {
+    display: none; /* Initially hidden, JS will toggle to flex */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0; /* Add some vertical padding */
+    max-width: 100%;
+}
 
+.qr-loader-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 12px); /* 5x5 grid */
+    grid-template-rows: repeat(5, 12px);
+    gap: 4px;
+    margin-bottom: 15px;
+}
 
+.qr-loader-grid div {
+    background-color: var(--primary);
+    opacity: 0.1;
+    border-radius: 2px; /* Slightly rounded squares */
+    animation: qrGridBuild 1.5s infinite ease-in-out;
+}
 
+/* Staggered animation delays for a "building" or "wave" effect */
+.qr-loader-grid div:nth-child(1) { animation-delay: 0.0s; }
+.qr-loader-grid div:nth-child(2), .qr-loader-grid div:nth-child(6) { animation-delay: 0.05s; }
+.qr-loader-grid div:nth-child(3), .qr-loader-grid div:nth-child(7), .qr-loader-grid div:nth-child(11) { animation-delay: 0.1s; }
+.qr-loader-grid div:nth-child(4), .qr-loader-grid div:nth-child(8), .qr-loader-grid div:nth-child(12), .qr-loader-grid div:nth-child(16) { animation-delay: 0.15s; }
+.qr-loader-grid div:nth-child(5), .qr-loader-grid div:nth-child(9), .qr-loader-grid div:nth-child(13), .qr-loader-grid div:nth-child(17), .qr-loader-grid div:nth-child(21) { animation-delay: 0.2s; }
+.qr-loader-grid div:nth-child(10), .qr-loader-grid div:nth-child(14), .qr-loader-grid div:nth-child(18), .qr-loader-grid div:nth-child(22) { animation-delay: 0.25s; }
+.qr-loader-grid div:nth-child(15), .qr-loader-grid div:nth-child(19), .qr-loader-grid div:nth-child(23) { animation-delay: 0.3s; }
+.qr-loader-grid div:nth-child(20), .qr-loader-grid div:nth-child(24) { animation-delay: 0.35s; }
+.qr-loader-grid div:nth-child(25) { animation-delay: 0.4s; }
 
+@keyframes qrGridBuild {
+    0%, 100% { opacity: 0.1; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1); }
+}
 
+.qr-loader-container p {
+    font-size: 1em;
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-top: 5px;
+}
+.dark-mode .qr-loader-container p {
+    color: var(--primary);
+}
+footer{
+    margin-top: 1rem;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.05);
+  min-height: 2.5em; /* Ensure space even when empty */
+  line-height: 1.5;
+  word-wrap: break-word;
+}
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script> <!-- Keep one version -->
 
 </head>
 <body>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <!-- Main Container -->
-  <br>
-<span></span>
-  <br>
-  <br>
-  <br>
-  <div class="container">
-    <div class="theme-toggle" onclick="toggleTheme()">
-          <label class="theme-switch">
-          <input onclick="toggleTheme()" type="checkbox" class="theme-switch__checkbox">
-          <div class="theme-switch__container">
-              <div class="theme-switch__clouds"></div>
-              <div class="theme-switch__stars-container">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 55" fill="none">
-                      <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M135.831 3.00688C135.055 3.85027 134.111 4.29946 133 4.35447C134.111 4.40947 135.055 4.85867 135.831 5.71123C136.607 6.55462 136.996 7.56303 136.996 8.72727C136.996 7.95722 137.172 7.25134 137.525 6.59129C137.886 5.93124 138.372 5.39954 138.98 5.00535C139.598 4.60199 140.268 4.39114 141 4.35447C139.88 4.2903 138.936 3.85027 138.16 3.00688C137.384 2.16348 136.996 1.16425 136.996 0C136.996 1.16425 136.607 2.16348 135.831 3.00688ZM31 23.3545C32.1114 23.2995 33.0551 22.8503 33.8313 22.0069C34.6075 21.1635 34.9956 20.1642 34.9956 19C34.9956 20.1642 35.3837 21.1635 36.1599 22.0069C36.9361 22.8503 37.8798 23.2903 39 23.3545C38.2679 23.3911 37.5976 23.602 36.9802 24.0053C36.3716 24.3995 35.8864 24.9312 35.5248 25.5913C35.172 26.2513 34.9956 26.9572 34.9956 27.7273C34.9956 26.563 34.6075 25.5546 33.8313 24.7112C33.0551 23.8587 32.1114 23.4095 31 23.3545ZM0 36.3545C1.11136 36.2995 2.05513 35.8503 2.83131 35.0069C3.6075 34.1635 3.99559 33.1642 3.99559 32C3.99559 33.1642 4.38368 34.1635 5.15987 35.0069C5.93605 35.8503 6.87982 36.2903 8 36.3545C7.26792 36.3911 6.59757 36.602 5.98015 37.0053C5.37155 37.3995 4.88644 37.9312 4.52481 38.5913C4.172 39.2513 3.99559 39.9572 3.99559 40.7273C3.99559 39.563 3.6075 38.5546 2.83131 37.7112C2.05513 36.8587 1.11136 36.4095 0 36.3545ZM56.8313 24.0069C56.0551 24.8503 55.1114 25.2995 54 25.3545C55.1114 25.4095 56.0551 25.8587 56.8313 26.7112C57.6075 27.5546 57.9956 28.563 57.9956 29.7273C57.9956 28.9572 58.172 28.2513 58.5248 27.5913C58.8864 26.9312 59.3716 26.3995 59.9802 26.0053C60.5976 25.602 61.2679 25.3911 62 25.3545C60.8798 25.2903 59.9361 24.8503 59.1599 24.0069C58.3837 23.1635 57.9956 22.1642 57.9956 21C57.9956 22.1642 57.6075 23.1635 56.8313 24.0069ZM81 25.3545C82.1114 25.2995 83.0551 24.8503 83.8313 24.0069C84.6075 23.1635 84.9956 22.1642 84.9956 21C84.9956 22.1642 85.3837 23.1635 86.1599 24.0069C86.9361 24.8503 87.8798 25.2903 89 25.3545C88.2679 25.3911 87.5976 25.602 86.9802 26.0053C86.3716 26.3995 85.8864 26.9312 85.5248 27.5913C85.172 28.2513 84.9956 28.9572 84.9956 29.7273C84.9956 28.563 84.6075 27.5546 83.8313 26.7112C83.0551 25.8587 82.1114 25.4095 81 25.3545ZM136 36.3545C137.111 36.2995 138.055 35.8503 138.831 35.0069C139.607 34.1635 139.996 33.1642 139.996 32C139.996 33.1642 140.384 34.1635 141.16 35.0069C141.936 35.8503 142.88 36.2903 144 36.3545C143.268 36.3911 142.598 36.602 141.98 37.0053C141.372 37.3995 140.886 37.9312 140.525 38.5913C140.172 39.2513 139.996 39.9572 139.996 40.7273C139.996 39.563 139.607 38.5546 138.831 37.7112C138.055 36.8587 137.111 36.4095 136 36.3545ZM101.831 49.0069C101.055 49.8503 100.111 50.2995 99 50.3545C100.111 50.4095 101.055 50.8587 101.831 51.7112C102.607 52.5546 102.996 53.563 102.996 54.7273C102.996 53.9572 103.172 53.2513 103.525 52.5913C103.886 51.9312 104.372 51.3995 104.98 51.0053C105.598 50.602 106.268 50.3911 107 50.3545C105.88 50.2903 104.936 49.8503 104.16 49.0069C103.384 48.1635 102.996 47.1642 102.996 46C102.996 47.1642 102.607 48.1635 101.831 49.0069Z"
+
+  <!-- Announcement Banner -->
+  
+  <div class="theme-toggle-container">
+    <label class="theme-switch">
+      <input type="checkbox" class="theme-switch__checkbox" onchange="toggleTheme()">
+      <div class="theme-switch__container">
+        <div class="theme-switch__clouds"></div>
+        <div class="theme-switch__stars-container">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 55" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M135.831 3.00688C135.055 3.85027 134.111 4.29946 133 4.35447C134.111 4.40947 135.055 4.85867 135.831 5.71123C136.607 6.55462 136.996 7.56303 136.996 8.72727C136.996 7.95722 137.172 7.25134 137.525 6.59129C137.886 5.93124 138.372 5.39954 138.98 5.00535C139.598 4.60199 140.268 4.39114 141 4.35447C139.88 4.2903 138.936 3.85027 138.16 3.00688C137.384 2.16348 136.996 1.16425 136.996 0C136.996 1.16425 136.607 2.16348 135.831 3.00688ZM31 23.3545C32.1114 23.2995 33.0551 22.8503 33.8313 22.0069C34.6075 21.1635 34.9956 20.1642 34.9956 19C34.9956 20.1642 35.3837 21.1635 36.1599 22.0069C36.9361 22.8503 37.8798 23.2903 39 23.3545C38.2679 23.3911 37.5976 23.602 36.9802 24.0053C36.3716 24.3995 35.8864 24.9312 35.5248 25.5913C35.172 26.2513 34.9956 26.9572 34.9956 27.7273C34.9956 26.563 34.6075 25.5546 33.8313 24.7112C33.0551 23.8587 32.1114 23.4095 31 23.3545ZM0 36.3545C1.11136 36.2995 2.05513 35.8503 2.83131 35.0069C3.6075 34.1635 3.99559 33.1642 3.99559 32C3.99559 33.1642 4.38368 34.1635 5.15987 35.0069C5.93605 35.8503 6.87982 36.2903 8 36.3545C7.26792 36.3911 6.59757 36.602 5.98015 37.0053C5.37155 37.3995 4.88644 37.9312 4.52481 38.5913C4.172 39.2513 3.99559 39.9572 3.99559 40.7273C3.99559 39.563 3.6075 38.5546 2.83131 37.7112C2.05513 36.8587 1.11136 36.4095 0 36.3545ZM56.8313 24.0069C56.0551 24.8503 55.1114 25.2995 54 25.3545C55.1114 25.4095 56.0551 25.8587 56.8313 26.7112C57.6075 27.5546 57.9956 28.563 57.9956 29.7273C57.9956 28.9572 58.172 28.2513 58.5248 27.5913C58.8864 26.9312 59.3716 26.3995 59.9802 26.0053C60.5976 25.602 61.2679 25.3911 62 25.3545C60.8798 25.2903 59.9361 24.8503 59.1599 24.0069C58.3837 23.1635 57.9956 22.1642 57.9956 21C57.9956 22.1642 57.6075 23.1635 56.8313 24.0069ZM81 25.3545C82.1114 25.2995 83.0551 24.8503 83.8313 24.0069C84.6075 23.1635 84.9956 22.1642 84.9956 21C84.9956 22.1642 85.3837 23.1635 86.1599 24.0069C86.9361 24.8503 87.8798 25.2903 89 25.3545C88.2679 25.3911 87.5976 25.602 86.9802 26.0053C86.3716 26.3995 85.8864 26.9312 85.5248 27.5913C85.172 28.2513 84.9956 28.9572 84.9956 29.7273C84.9956 28.563 84.6075 27.5546 83.8313 26.7112C83.0551 25.8587 82.1114 25.4095 81 25.3545ZM136 36.3545C137.111 36.2995 138.055 35.8503 138.831 35.0069C139.607 34.1635 139.996 33.1642 139.996 32C139.996 33.1642 140.384 34.1635 141.16 35.0069C141.936 35.8503 142.88 36.2903 144 36.3545C143.268 36.3911 142.598 36.602 141.98 37.0053C141.372 37.3995 140.886 37.9312 140.525 38.5913C140.172 39.2513 139.996 39.9572 139.996 40.7273C139.996 39.563 139.607 38.5546 138.831 37.7112C138.055 36.8587 137.111 36.4095 136 36.3545ZM101.831 49.0069C101.055 49.8503 100.111 50.2995 99 50.3545C100.111 50.4095 101.055 50.8587 101.831 51.7112C102.607 52.5546 102.996 53.563 102.996 54.7273C102.996 53.9572 103.172 53.2513 103.525 52.5913C103.886 51.9312 104.372 51.3995 104.98 51.0053C105.598 50.602 106.268 50.3911 107 50.3545C105.88 50.2903 104.936 49.8503 104.16 49.0069C103.384 48.1635 102.996 47.1642 102.996 46C102.996 47.1642 102.607 48.1635 101.831 49.0069Z"
                           fill="currentColor"></path>
-                  </svg>
-              </div>
-              <div class="theme-switch__circle-container">
-                  <div class="theme-switch__sun-moon-container">
-                      <div class="theme-switch__moon">
-                          <div class="theme-switch__spot"></div>
-                          <div class="theme-switch__spot"></div>
-                          <div class="theme-switch__spot"></div>
-                      </div>
-                  </div>
+              </svg>
+          </div>
+          <div class="theme-switch__circle-container">
+              <div class="theme-switch__sun-moon-container">
+                  <div class="theme-switch__moon">
+                      <div class="theme-switch__spot"></div>
+                      <div class="theme-switch__spot"></div>
+                      <div class="theme-switch__spot"></div>
+                    </div>
               </div>
           </div>
       </div>
-
-    <img src="icons/logo.png" alt="">
-    <h1>MakeMyQR</h1>
-    <center>
-      <p>Version 1.0</p>
-    </center>
+    </label>
+  </div>
+  
+  <div class="container">
+    <br>
+    <br>
+    <div class="logo-section">
+      <img src="icons/logo.png" alt="MakeMyQR Logo">
+      <h1>MakeMyQR</h1>
+      <p class="version">Version 1.0</p>
+      <div class="announcement-banner">
+        <p>✨ Stay tuned—exciting updates are on the way! ✨</p>
+      </div>
+    </div>
+    
+  <div class="input-group">
     <input type="text" id="text" placeholder="Enter text or URL" onkeydown="handleKey(event)" />
-    <div>
+    <div class="action-buttons">
       <button onclick="generateQRCode()">Generate</button>
       <button onclick="downloadQRCode()">Download PNG</button>
       <button onclick="downloadSVG()">Download SVG</button>
     </div>
-    <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
-    <div id="qrcode"></div>
-    <p class="credit">Developed by <a href="https://www.linkedin.com/in/krishanth-g/">Krishanth G</a></p>
   </div>
+
+  <div class="drop-zone" id="dropZone">Or drag & drop text here</div>
+  <div id="qrcode" class="qrcode-box">
+    <div class="qr-loader-container" style="display: none;">
+        <div class="qr-loader-grid">
+            <div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <p>Constructing Your Code...</p>
+    </div>
+    <!-- QR Canvas will be appended here by JS -->
+  </div>
+
+</div>
+
 <div class="scanner-container">
 <h2>Scan QR Code from Image</h2>
 <input type="file" id="file-input" accept="image/*" />
@@ -330,46 +463,20 @@ img {
 
 
 
+  <footer class="credit">
+    Developed by <a href="https://www.linkedin.com/in/krishanth-g/" target="_blank">Krishanth G</a>
+  </footer>
 
 </div>
 </div>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 <button id="install-btn" class="install-btn">Install App</button>
-
 
   <!-- External JS -->
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.10/minified/html5-qrcode.min.js"></script>
-
-
   <!-- Inline JS -->
   <script>
-    async function requestCameraAccess() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    // If successful, you can use the stream in a video element or process it
-    console.log('Camera access granted');
-    // For example, show video stream in a <video> element
-    const videoElement = document.querySelector('video#camera');
-    if (videoElement) {
-      videoElement.srcObject = stream;
-      videoElement.play();
-    }
-  } catch (err) {
-    console.error('Camera access denied or error:', err);
-  }
-}
-
-
     // Theme toggle
     function toggleTheme() {
       document.body.classList.toggle("dark-mode");
@@ -384,33 +491,56 @@ img {
 function generateQRCode() {
   const qrText = document.getElementById("text").value.trim();
   const qrcodeContainer = document.getElementById("qrcode");
-  qrcodeContainer.innerHTML = "";
+  const loaderContainer = qrcodeContainer.querySelector('.qr-loader-container');
+
+  // Clear previous QR canvas if it exists
+  const existingCanvas = document.getElementById("qr-canvas");
+  if (existingCanvas) {
+    existingCanvas.remove();
+  }
+  // Clear SVG data from dataset
+  qrcodeContainer.dataset.svg = "";
 
   if (!qrText) {
     alert("Please enter some text or a URL.");
+    if (loaderContainer) loaderContainer.style.display = 'none'; // Ensure loader is hidden
     return;
   }
 
-  QRCode.toCanvas(qrText, { errorCorrectionLevel: 'H' }, function (err, canvas) {
-    if (err) return console.error(err);
-    canvas.id = "qr-canvas";
-canvas.style.opacity = "0"; // initially hidden
-// Append canvas to DOM
-qrcodeContainer.appendChild(canvas);
+  // Show loader
+  if (loaderContainer) {
+    loaderContainer.style.display = 'flex';
+  }
 
-// Trigger reflow to restart animation
-void canvas.offsetWidth;
+  // Use a short timeout to allow the loader to render before blocking for QR generation
+  setTimeout(() => {
+    QRCode.toCanvas(qrText, { errorCorrectionLevel: 'H', width: 256 }, function (err, canvas) {
+      if (loaderContainer) {
+        loaderContainer.style.display = 'none'; // Hide loader
+      }
 
-// Start animation
-canvas.style.animation = "qrReveal 0.6s ease forwards";
+      if (err) {
+        console.error(err);
+        // Display a user-friendly error in the qrcode container
+        const errorP = document.createElement('p');
+        errorP.style.color = 'red';
+        errorP.style.textAlign = 'center';
+        errorP.textContent = 'Error generating QR code. Please try again.';
+        qrcodeContainer.appendChild(errorP); // Append error message
+        return;
+      }
+      canvas.id = "qr-canvas"; // The CSS animation for #qr-canvas will apply
+      qrcodeContainer.appendChild(canvas);
+      // The existing #qr-canvas animation (qrReveal) will take effect upon insertion
+    });
 
-  });
-
-  QRCode.toString(qrText, { type: 'svg' }, function (err, svg) {
-    if (!err) {
-      qrcodeContainer.dataset.svg = svg;
-    }
-  });
+    QRCode.toString(qrText, { type: 'svg' }, function (err, svgString) {
+      if (err) return console.error("SVG generation error:", err);
+      if (svgString) {
+        qrcodeContainer.dataset.svg = svgString;
+      }
+    });
+  }, 200); // 200ms delay
 }
 
 
@@ -462,7 +592,6 @@ dropZone.addEventListener("drop", (e) => {
 
 
   </script>
-<script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
 <script>
   // Scan from image
 // Image file input QR scan
@@ -527,19 +656,32 @@ let scanning = false;
 let stream;
 
 scanBtn.addEventListener("click", async () => {
-  if (scanning) return;
+  if (scanning) {
+    stopScan();
+    return;
+  }
+
+  scanBtn.disabled = true;
+  scanBtn.textContent = "Starting Camera...";
+  errorDiv.textContent = ""; // Clear previous errors
+  resultDiv.textContent = "Attempting to access camera...";
+
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
     video.srcObject = stream;
-
-    // Wait for video to load before starting scan
     video.addEventListener("loadedmetadata", () => {
-      video.play(); // Start video playback
+      video.play();
       scanning = true;
+      scanBtn.textContent = "Stop Scan";
+      scanBtn.disabled = false;
+      resultDiv.textContent = "Scanning...";
       scanQRCode();
     });
   } catch (err) {
     errorDiv.textContent = "Camera access error: " + err.message;
+    resultDiv.textContent = "Webcam scan result will appear here";
+    scanBtn.textContent = "Start Camera Scan";
+    scanBtn.disabled = false;
   }
 });
 
@@ -582,68 +724,12 @@ function stopScan() {
     stream.getTracks().forEach(track => track.stop());
     video.srcObject = null;
   }
-}
-
-
-
-function tick() {
-  if (!scanning) return;
-
-  if (video.readyState === video.HAVE_ENOUGH_DATA) {
-    webcamCanvas.width = video.videoWidth;
-    webcamCanvas.height = video.videoHeight;
-    webcamCtx.drawImage(video, 0, 0, webcamCanvas.width, webcamCanvas.height);
-
-    const imageData = webcamCtx.getImageData(0, 0, webcamCanvas.width, webcamCanvas.height);
-    const code = jsQR(imageData.data, webcamCanvas.width, webcamCanvas.height);
-
-    if (code) {
-      webcamResult.textContent = `Decoded Text: ${code.data}`;
-      // Optionally, stop scanning after success:
-      // scanning = false;
-      // videoStream.getTracks().forEach(track => track.stop());
-      // video.style.display = 'none';
-      // webcamCanvas.style.display = 'none';
-      // scanBtn.textContent = 'Start Camera Scan';
-    } else {
-      webcamResult.textContent = 'Scanning...';
-    }
-  }
-  requestAnimationFrame(tick);
-}
-function animateSVGQRCode() {
-  const svgString = document.getElementById("qrcode").dataset.svg;
-  if (!svgString) return;
-
-  const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
-  const svgElement = svgDoc.documentElement;
-
-  // Clear container & append SVG
-  const qrcodeContainer = document.getElementById("qrcode");
-  qrcodeContainer.innerHTML = "";
-  qrcodeContainer.appendChild(svgElement);
-
-  // Animate all <path> strokes (fake a draw effect)
-  const paths = svgElement.querySelectorAll("path");
-  paths.forEach(path => {
-    const length = path.getTotalLength();
-    path.style.strokeDasharray = length;
-    path.style.strokeDashoffset = length;
-    path.style.animation = "dashReveal 1s ease forwards";
-  });
-}
-
-// CSS
-/*
-@keyframes dashReveal {
-  to {
-    stroke-dashoffset: 0;
+  scanBtn.textContent = "Start Camera Scan";
+  scanBtn.disabled = false;
+  if (!resultDiv.textContent.startsWith("QR Code:")) { // Don't clear if a result was found
+      resultDiv.textContent = "Webcam scan result will appear here";
   }
 }
-*/
-
-
 
 </script>
 <script>
